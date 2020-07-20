@@ -3,7 +3,7 @@ project(dynamixel_control_hw)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(LIBDYNAMIXEL "")
+set(LIBDYNAMIXEL "/usr/local")
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -34,7 +34,7 @@ elseif (NOT ("$ENV{RESIBOTS_DIR}" STREQUAL ""))
 endif()
 
 if (NOT (EXISTS "${libdynamixel_dir}/include/dynamixel/"))
-  message(FATAL_ERROR "libdynamixel was not found!")
+  message(FATAL_ERROR "libdynamixel was not found!! ${LIBDYNAMIXEL}")
 endif()
 
 include_directories(

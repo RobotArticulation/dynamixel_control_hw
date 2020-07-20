@@ -17,11 +17,11 @@
 
   <!-- To move the dummy robot with a gui, bypassing the controller manager -->
   <node if="$(arg fake_robot)" pkg="joint_state_publisher"
-    type="joint_state_publisher" name="dummy_robot" launch-prefix="gdb -ex run --args" />
+    type="joint_state_publisher" name="dummy_robot" />
 
   <!-- launch our hardware interface -->
   <group unless="$(arg fake_robot)">
-    <arg name="protocol_version" default="p2"
+    <arg name="protocol_version" default="p1"
          doc="Choses the dynamixel protocol variant to be used (p1 or p2)"/>
     <node pkg="dynamixel_control_hw"
           type="dynamixel_control_$(arg protocol_version)"
@@ -29,17 +29,10 @@
           required="true"/>
 
     <!-- Start a controller for our dummy robot -->
-<!--     <node name="controller" pkg="controller_manager" type="spawner"
+    <node name="controller" pkg="controller_manager" type="spawner"
           respawn="false" output="screen" clear_params="true"
           args="/dynamixel_controllers/traj_controller
-                /dynamixel_controllers/pos_controller
-                /dynamixel_controllers/joint_state_controller" /> -->
-
-<node name="controller" pkg="controller_manager" type="spawner"
-          respawn="false" output="screen" clear_params="true"
-          args="/dynamixel_controllers/pos_controller
-                /dynamixel_controllers/joint_state_controller" /> 
-
-
+                /dynamixel_controllers/vel_controller
+                /dynamixel_controllers/joint_state_controller" />
   </group>
 </launch>
