@@ -357,7 +357,6 @@ namespace dynamixel {
     void DynamixelHardwareInterface<Protocol>::write(const ros::Time& time,
         const ros::Duration& loop_period)
     {
-        bool reg_write_done = false;
         // ensure that the joints limits are respected
         _enforce_limits(loop_period);
 
@@ -399,7 +398,6 @@ namespace dynamixel {
                         _servos[i]->reg_goal_position_angle(command));
                     _dynamixel_controller.recv(status);
 
-                    reg_write_done = true;
                 }
                 else if (OperatingMode::wheel == mode) {
                     // Invert the orientation, if configured
@@ -416,8 +414,6 @@ namespace dynamixel {
                     _dynamixel_controller.send(
                         _servos[i]->reg_moving_speed_angle(command, mode));
                     _dynamixel_controller.recv(status);
-
-                    reg_write_done = true;
                 }
             }
             catch (dynamixel::errors::Error& e) {
@@ -430,16 +426,13 @@ namespace dynamixel {
         /*
          * Only send an action instruction if there has been at least one preceding reg_write instruction
          */
-        if (reg_write_done)
-        {
-            try {
-                _dynamixel_controller.send(dynamixel::instructions::Action<Protocol>(Protocol::broadcast_id));
-            }
-            catch (dynamixel::errors::Error& e) {
-                ROS_ERROR_STREAM("Caught a Dynamixel exception while sending "
-                    << "new commands:\n"
-                    << e.msg());
-            }
+        try {
+            _dynamixel_controller.send(dynamixel::instructions::Action<Protocol>(Protocol::broadcast_id));
+        }
+        catch (dynamixel::errors::Error& e) {
+            ROS_ERROR_STREAM("Caught a Dynamixel exception while sending "
+                << "new commands:\n"
+                << e.msg());
         }
     }
 
